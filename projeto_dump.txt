@@ -1,0 +1,138 @@
+========================================================
+ PROJETO: agente-labirinto
+ Gerado em: 2026-05-20 12:45:58
+========================================================
+
+## ESTRUTURA DO PROJETO
+
+/home/athus/Desktop/athus/agente-labirinto
+├── api
+│   ├── app
+│   │   ├── algorithms
+│   │   │   ├── local
+│   │   │   ├── online
+│   │   │   └── search
+│   │   │       ├── bfs.py
+│   │   │       └── dfs.py
+│   │   ├── core
+│   │   │   └── config.py
+│   │   ├── data
+│   │   │   ├── grafo.py
+│   │   │   ├── labirinto.py
+│   │   │   ├── labyrinths
+│   │   │   │   ├── lab1.txt
+│   │   │   │   ├── lab2.txt
+│   │   │   │   ├── lab3.txt
+│   │   │   │   └── lab4.txt
+│   │   │   └── test.py
+│   │   ├── main.py
+│   │   ├── routers
+│   │   │   └── agente.py
+│   │   ├── schemas
+│   │   │   └── agente.py
+│   │   └── services
+│   ├── .gitignore
+│   ├── README.md
+│   └── requirements.txt
+├── contexto.txt
+├── context.txt
+├── projeto_dump.txt
+└── script.sh
+
+========================================================
+
+## CONTEÚDO DOS ARQUIVOS
+
+### api/app/core/config.py
+```
+```
+
+### api/app/data/labyrinths/lab1.txt
+```
+#####B#
+##### #
+####  #
+#### ##
+     ##
+A######
+```
+
+### api/app/data/labyrinths/lab2.txt
+```
+###                 #########
+#   ###################   # #
+# ####                # # # #
+# ################### # # # #
+#                     # # # #
+##################### # # # #
+#   ##                # # # #
+# # ## ### ## ######### # # #
+# #    #   ##B#         # # #
+# # ## ################ # # #
+### ##             #### # # #
+### ############## ## # # # #
+###             ##    # # # #
+###### ######## ####### # # #
+###### ####             #   #
+A      ######################
+```
+
+### api/app/data/labyrinths/lab3.txt
+```
+##    #
+## ## #
+#B #  #
+# ## ##
+     ##
+A######
+```
+
+### api/app/data/labyrinths/lab4.txt
+```
+############
+#          B
+# ######### 
+# #       #  
+# # ##### # 
+#   #     # 
+### # ##### 
+A   #       
+```
+
+### api/app/routers/agente.py
+```
+```
+
+### api/app/schemas/agente.py
+```
+```
+
+### api/.env
+```
+```
+
+### api/README.md
+```
+```
+
+### api/requirements.txt
+```
+fastapi[standard]>=0.115.0```
+
+### contexto.txt
+```
+📂 Gerando dump de: /home/athus/Desktop/athus/agente-labirinto
+📄 Saída: projeto_dump.txt
+```
+
+### context.txt
+```
+```
+
+### projeto_dump.txt
+```
+```
+
+========================================================
+ RESUMO: 13 arquivo(s) incluído(s), 8 ignorado(s)
+========================================================
