@@ -1,0 +1,39 @@
+# /agente-labirinto/.gitignore
+
+# =========================
+# Python / API (Backend)
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Ambientes Virtuais
+.venv/
+venv/
+env/
+
+# Configurações e Segredos (NUNCA subir para o GitHub)
+.env
+
+# =========================
+# Node / React (Frontend)
+# =========================
+node_modules/
+dist/
+build/
+.npm/
+
+# =========================
+# Arquivos do Sistema / IDEs
+# =========================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# =========================
+# Arquivos Específicos do Projeto
+# =========================
+projeto_dump.txt
+/tmp/
