@@ -1,6 +1,8 @@
+# api/app/data/test.py
 from pathlib import Path
 import sys
 
+# Configuração do caminho para o Python encontrar a pasta 'app'
 BASE_DIR = Path(__file__).resolve().parents[2]
 SEARCH_DIR = BASE_DIR / "app" / "algorithms" / "search"
 
@@ -8,16 +10,13 @@ for path in (BASE_DIR, SEARCH_DIR):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))
 
-from app.data.labirinto import Labirinto
-from app.algorithms.search.dfs import busca_dfs
-
+# Importa a Interface unificada
+from app.services.test.Interface import Interface
 
 def main():
-    lab = Labirinto(str(Path(__file__).parent / "labyrinths" / "lab1.txt"))
-    busca_dfs(lab)
-    lab.print()
-    print(lab.num_explored)
-
+    # Instancia e inicia o loop da interface
+    programa = Interface()
+    programa.iniciar()
 
 if __name__ == "__main__":
     main()
