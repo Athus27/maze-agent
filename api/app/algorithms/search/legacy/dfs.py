@@ -1,4 +1,4 @@
-from estrutura import No, PilhaFronteira
+from .estrutura import No, PilhaFronteira
 
 
 def busca_dfs(labirinto):

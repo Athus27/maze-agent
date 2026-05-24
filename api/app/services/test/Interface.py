@@ -176,11 +176,9 @@ class Interface:
         print(f"\nCarregando mapa: {caminho_mapa}")
         
         try:
-            from app.data.labirinto import Labirinto
             from app.services.solucionador_service import gerenciar_solucao
             
-            lab = Labirinto(caminho_mapa)
-            lab_resolvido = gerenciar_solucao(nome_algoritmo, lab)
+            lab_resolvido = gerenciar_solucao(nome_algoritmo, caminho_mapa)
             
             print("\n--- Resultado da Busca ---")
             lab_resolvido.print()

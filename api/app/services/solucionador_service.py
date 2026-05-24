@@ -1,55 +1,60 @@
 """
-1 - Entrada: O endpoint da API recebe do React o nome do algoritmo desejado (ex: "DFS") e o identificador do mapa.  
-2 - Fábrica: esse arquivo intercepta essa string e decide qual módulo de algoritmo invocar.
-3 - Execução: O algoritmo selecionado roda sobre a estrutura do labirinto. 
-4 - Saída: O serviço padroniza o resultado em um formato único de resposta que a API converte em JSON para o React consumir.
+1 - Entrada: o serviço recebe o nome do algoritmo e o caminho do mapa.
+2 - Fábrica: este arquivo escolhe o módulo certo dentro de `app/algorithms/search`.
+3 - Execução: o algoritmo roda sem alterar sua lógica original.
+4 - Saída: o resultado é convertido para o objeto `Labirinto` que a interface já sabe imprimir.
 """
-import time
+from time import perf_counter
 
-from app.algorithms.search.dfs import busca_dfs
-from app.algorithms.search.bfs import busca_bfs
+from app.data.labirinto import Labirinto
+from app.algorithms.search.cega.busca_largura import LabirintoBusca as BuscaLargura
+from app.algorithms.search.cega.busca_profundidade import LabirintoBusca as BuscaProfundidade
+from app.algorithms.search.informada.busca_custo_uniforme import LabirintoBusca as BuscaCustoUniforme
+from app.algorithms.search.informada.busca_gulosa import LabirintoBusca as BuscaGulosa
+from app.algorithms.search.informada.busca_weighted_astar import LabirintoBusca as BuscaWeightedAStar
+from app.algorithms.search.informada.busca_idastar import LabirintoBusca as BuscaIDAStar
 
-# O dicionário : (Factory)
+
 ALGORITMOS_BUSCA = {
-    "DFS": busca_dfs,
-    "BFS": busca_bfs,
-    # "UCS": busca_ucs,
-    # "A*": busca_astar,
+    "BFS": lambda caminho: BuscaLargura(caminho).busca_largura(),
+    "DFS": lambda caminho: BuscaProfundidade(caminho).busca_profundidade(),
+    "UCS": lambda caminho: BuscaCustoUniforme(caminho).busca_custo_uniforme(),
+    "Greedy": lambda caminho: BuscaGulosa(caminho).busca_gulosa(),
+    "A*": lambda caminho: BuscaWeightedAStar(caminho).busca_weighted_astar(peso=1.0),
+    "Weighted A*": lambda caminho: BuscaWeightedAStar(caminho).busca_weighted_astar(peso=2.0),
+    "IDA*": lambda caminho: BuscaIDAStar(caminho).busca_idastar(),
 }
 
-#Fábrica escolhe a Estratégia certa dinamicamente baseado no comando do usuário.2
-def gerenciar_solucao(nome_algoritmo: str, labirinto):
+
+def gerenciar_solucao(nome_algoritmo: str, caminho_mapa: str):
     algoritmo_funcao = ALGORITMOS_BUSCA.get(nome_algoritmo)
-    
+
     if not algoritmo_funcao:
         raise ValueError(f"Algoritmo '{nome_algoritmo}' não é válido ou não foi implementado.")
-    t_inicio = time.time()
-    
-    algoritmo_funcao(labirinto)
-    
-    t_fim = time.time()
-    t_total = t_fim - t_inicio
-    
-    custo_caminho = len(labirinto.solucao[0]) if labirinto.solucao else 0
-    nos_expandidos = labirinto.num_explored
-    
-    # 5. Aplica a sua função de Desempenho (J)
-    # Definindo pesos hipotéticos (você pode ajustar depois)
+
+    labirinto = Labirinto(caminho_mapa)
+    t_inicio = perf_counter()
+    resultado = algoritmo_funcao(caminho_mapa)
+    t_total = perf_counter() - t_inicio
+
+    labirinto.solucao = (resultado.acoes, resultado.caminho) if resultado.encontrado else None
+    labirinto.num_explored = resultado.nos_explorados
+    labirinto.explored = set(resultado.estados_explorados)
+
+    custo_caminho = resultado.tamanho_caminho or 0
+    nos_expandidos = resultado.nos_expandidos
+
     alpha = 1.0
     beta = 0.5
-    gamma = 100.0 # Peso maior para o tempo
-    
-    # ainda n tem 'inválidos' e 'revisitadas' ainda, ignoramos nesta fórmula inicial
+    gamma = 100.0
     desempenho_J = -(alpha * custo_caminho) - (beta * nos_expandidos) - (gamma * t_total)
-    
-    # Salva os resultados no labirinto para a Interface conseguir imprimir
+
     labirinto.metricas = {
+        "algoritmo": resultado.algoritmo,
         "custo": custo_caminho,
         "expandidos": nos_expandidos,
         "tempo_segundos": t_total,
-        "desempenho_J": desempenho_J
+        "desempenho_J": desempenho_J,
     }
-    
-    
-    return labirinto
 
+    return labirinto
