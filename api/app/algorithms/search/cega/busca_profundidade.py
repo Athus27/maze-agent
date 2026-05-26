@@ -1,4 +1,3 @@
-from collections import deque
 from typing import List, Set
 
 from ..common import LabirintoBuscaBase, No, ResultadoBusca, Estado
@@ -12,6 +11,7 @@ class LabirintoBusca(LabirintoBuscaBase):
         ordem_explorados: List[Estado] = []
         nos_explorados = 0
         nos_expandidos = 0
+        tamanho_max_fronteira = len(fronteira)
 
         while fronteira:
             no = fronteira.pop()
@@ -21,7 +21,17 @@ class LabirintoBusca(LabirintoBuscaBase):
 
             if no.estado == self.objetivo:
                 caminho, acoes = self.reconstruir(no)
-                return ResultadoBusca('Busca em Profundidade (DFS)', True, caminho, acoes, nos_explorados, nos_expandidos, ordem_explorados)
+                return ResultadoBusca(
+                    'Busca em Profundidade (DFS)',
+                    True,
+                    caminho,
+                    acoes,
+                    no.g,
+                    nos_explorados,
+                    nos_expandidos,
+                    ordem_explorados,
+                    tamanho_max_fronteira,
+                )
 
             explorados.add(no.estado)
             nos_expandidos += 1
@@ -31,5 +41,16 @@ class LabirintoBusca(LabirintoBuscaBase):
                     filho = No(estado=estado, pai=no, acao=acao, g=no.g + custo)
                     fronteira.append(filho)
                     em_fronteira.add(estado)
+                    tamanho_max_fronteira = max(tamanho_max_fronteira, len(fronteira))
 
-        return ResultadoBusca('Busca em Profundidade (DFS)', False, [], [], nos_explorados, nos_expandidos, ordem_explorados)
+        return ResultadoBusca(
+            'Busca em Profundidade (DFS)',
+            False,
+            [],
+            [],
+            None,
+            nos_explorados,
+            nos_expandidos,
+            ordem_explorados,
+            tamanho_max_fronteira,
+        )

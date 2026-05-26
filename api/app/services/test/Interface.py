@@ -182,7 +182,8 @@ class Interface:
             
             print("\n--- Resultado da Busca ---")
             lab_resolvido.print()
-            print(f"Estados Explorados: {lab_resolvido.num_explored}")
+            for nome, valor in lab_resolvido.metricas.items():
+                print(f"{nome}: {valor}")
             
         except Exception as e:
             print(f"\nErro durante a execução: {e}")

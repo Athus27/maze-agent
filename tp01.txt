@@ -1,0 +1,375 @@
+Trabalho Prático – Agente Inteligente em
+Labirinto
+Busca Clássica, Busca Local e Busca Online
+Curso: Engenharia de Computação / Sistemas de Informação
+Duração: 3 semanas
+Linguagem: Python
+1 Visão Geral
+Este Trabalho Prático tem como objetivo desenvolver um agente inteligente capaz de atuar
+em um labirinto discreto, representado por uma matriz. O mesmo domínio será utilizado
+para estudar três formas diferentes de resolução de problemas em Inteligência Artificial:
+busca clássica → busca local → busca online.
+O trabalho deverá ser desenvolvido em Python e exigirá não apenas implementação, mas
+também modelagem formal, análise experimental, visualização, comparação de algoritmos e
+reflexão crítica sobre o uso de ferramentas de IA generativa.
+A proposta central é:
+Projetar um agente para resolver labirintos sob três condições:
+mapa conhecido, múltiplos objetivos e mapa desconhecido.
+2 Contexto do Problema
+O ambiente será um labirinto representado por uma grade bidimensional.
+Um exemplo de labirinto é:
+###########
+#A # #
+# ## # ## #
+# C B #
+# ## # #
+# C # #
+###########
+A legenda básica é:
+1
+Símbolo Significado
+A posição inicial do agente
+B objetivo final
+C ponto de coleta obrigatório
+# parede ou obstáculo
+célula livre
+? célula desconhecida no modo online
+O mesmo domínio será utilizado em três modos:
+1. Labirinto conhecido: o agente conhece todo o mapa e deve encontrar um caminho de
+A até B.
+2. Labirinto com pontos de coleta: o agente deve visitar todos os pontos Ci antes de
+chegar a B.
+3. Labirinto desconhecido: o agente não conhece o mapa completo e deve explorá-lo
+enquanto se move.
+3 Objetivos de Aprendizagem
+Ao final do trabalho, o grupo deverá demonstrar capacidade de:
+1. modelar um agente inteligente usando os conceitos de PEAS;
+2. formular problemas de busca de maneira formal;
+3. implementar e comparar algoritmos de busca clássica;
+4. aplicar busca local em um problema de otimização;
+5. implementar uma estratégia de busca online em ambiente desconhecido;
+6. coletar métricas experimentais;
+7. gerar visualizações do comportamento do agente;
+8. analisar criticamente capacidades e limitações dos algoritmos;
+9. utilizar IA generativa como ferramenta de apoio, sem substituir o entendimento.
+4 Parte I – Projeto do Agente Inteligente
+Antes da implementação dos algoritmos, o grupo deverá definir formalmente o agente.
+2
+4.1 Modelagem PEAS
+O grupo deverá especificar:
+P EAS = (Performance, Environment, Actuators, Sensors).
+Performance
+A medida de desempenho deve representar o que significa bom comportamento do agente.
+Uma possível função de desempenho é:
+J = −α·custo caminho−β·nós expandidos−γ·tempo execução−δ·mov inválidos−·células revisitadas.
+O grupo poderá propor outra função, desde que justifique tecnicamente suas escolhas.
+Environment
+O ambiente é um labirinto em grade, discreto, com:
+• células livres;
+• paredes;
+• posição inicial;
+• objetivo final;
+• pontos de coleta;
+• regiões desconhecidas no modo online.
+Actuators
+O agente poderá executar movimentos ortogonais:
+A = {cima, baixo, esquerda, direita}.
+Sensors
+No modo de busca clássica, o agente conhece todo o mapa.
+No modo online, o agente percebe apenas uma vizinhança local. Por exemplo, com raio de
+percepção r = 1, ele percebe:
+(x − 1, y), (x + 1, y), (x, y − 1), (x, y + 1).
+3
+4.2 Classificação do Agente
+O grupo deverá justificar se o agente é:
+• reflexo simples;
+• baseado em modelo;
+• baseado em objetivos;
+• baseado em utilidade;
+• agente aprendiz.
+Para este trabalho, espera-se que o agente seja, no mínimo:
+agente baseado em objetivos com modelo interno.
+Na parte online, o agente deverá atualizar seu modelo interno do ambiente.
+5 Parte II – Busca Clássica no Labirinto Conhecido
+Nesta etapa, o agente conhece todo o labirinto desde o início.
+O problema é encontrar um caminho de A até B:
+A → B.
+5.1 Formulação Formal
+O problema deverá ser formulado como:
+hS, A, T, s0, G, ci,
+onde:
+• S: conjunto de posições livres do labirinto;
+• A: conjunto de ações possíveis;
+• T: função de transição;
+• s0: posição inicial A;
+• G: teste de objetivo, isto é, alcançar B;
+• c: custo de cada movimento.
+4
+5.2 Algoritmos Obrigatórios
+O grupo deverá implementar:
+1. Busca em Largura – BFS;
+2. Busca em Profundidade – DFS;
+3. Busca de Custo Uniforme – UCS;
+4. Busca Gulosa;
+5. A*.
+Para busca heurística, recomenda-se a distância de Manhattan:
+h(n) = |xn − xB| + |yn − yB|.
+5.3 Métricas Obrigatórias
+Para cada algoritmo, devem ser registradas as seguintes métricas:
+• encontrou solução?
+• custo do caminho;
+• tamanho do caminho;
+• número de nós explorados;
+• número de nós expandidos;
+• tempo de execução;
+• tamanho máximo da fronteira.
+A tabela experimental mínima deve seguir o modelo:
+Algoritmo Sucesso Custo Passos Expandidos Tempo Fronteira
+BFS
+DFS
+UCS
+Gulosa
+A*
+5
+5.4 Questões de Análise
+O relatório deve responder:
+1. BFS encontrou o menor caminho? Em quais condições isso ocorre?
+2. DFS encontrou solução rapidamente? A solução foi boa?
+3. UCS diferiu de BFS quando os custos variaram?
+4. A busca gulosa foi eficiente? Foi ótima?
+5. A* equilibrou qualidade da solução e eficiência?
+6. A heurística utilizada é admissível? Justifique.
+6 Parte III – Busca Local com Pontos de Coleta
+Nesta etapa, o labirinto contém vários pontos de coleta obrigatórios:
+C1, C2, . . . , Ck.
+O agente deve sair de A, visitar todos os pontos de coleta e terminar em B.
+O problema deixa de ser apenas:
+A → B
+e passa a ser:
+A → Cπ(1) → Cπ(2) → · · · → Cπ(k) → B,
+onde π é uma permutação dos pontos de coleta.
+6.1 Representação da Solução
+Uma solução candidata é uma ordem de visitação dos pontos de coleta.
+Exemplo:
+s = [C3, C1, C4, C2].
+Isso significa que o agente visitará:
+A → C3 → C1 → C4 → C2 → B.
+6
+6.2 Função de Custo
+O custo de uma solução é:
+C(s) = d(A, Cπ(1)) +X
+k−1
+i=1
+d(Cπ(i)
+, Cπ(i+1)) + d(Cπ(k)
+, B),
+onde d(X, Y ) é o custo do menor caminho entre dois pontos do labirinto.
+Esse menor caminho deverá ser calculado por A* ou UCS.
+6.3 Algoritmos Obrigatórios
+O grupo deverá implementar:
+1. Hill-Climbing;
+2. Simulated Annealing.
+Como bônus, o grupo poderá implementar:
+1. Algoritmo Genético.
+6.4 Vizinhança
+A vizinhança pode ser definida por troca de dois pontos da ordem de visitação:
+[C1, C2, C3, C4] → [C1, C4, C3, C2].
+Outra possibilidade é inverter um trecho da solução:
+[C1, C2, C3, C4, C5] → [C1, C4, C3, C2, C5].
+O grupo deverá justificar a vizinhança escolhida.
+6.5 Métricas Obrigatórias
+Para cada método de busca local, devem ser medidos:
+• melhor custo encontrado;
+• pior custo encontrado;
+• custo médio em múltiplas execuções;
+• tempo médio;
+• número médio de iterações;
+7
+• curva de convergência;
+• taxa de sucesso em atingir uma solução aceitável.
+O relatório deve conter pelo menos um gráfico:
+iteração × melhor custo.
+6.6 Questões de Análise
+O relatório deve discutir:
+1. Hill-Climbing ficou preso em mínimo local?
+2. Simulated Annealing encontrou soluções melhores?
+3. Como a temperatura inicial influenciou os resultados?
+4. Como a taxa de resfriamento afetou a convergência?
+5. A busca local encontrou sempre a solução ótima?
+6. Qual foi o compromisso entre tempo e qualidade?
+7 Parte IV – Busca Online no Labirinto Desconhecido
+Nesta etapa, o agente não conhece o labirinto completo.
+O professor fornece ao simulador o mapa real, mas o agente não pode acessá-lo diretamente.
+O agente deverá construir um mapa interno progressivamente.
+7.1 Mapa Real e Mapa Interno
+Mapa real
+O mapa real contém todas as paredes, caminhos e objetivos. Ele é usado apenas pelo simulador.
+Mapa interno
+O mapa interno do agente começa desconhecido:
+???????????
+???????????
+????A??????
+???????????
+???????????
+Conforme o agente se move, ele percebe células próximas e atualiza seu modelo interno.
+8
+7.2 Ciclo da Busca Online
+A cada passo, o agente deverá executar o ciclo:
+perceber → atualizar mapa interno → planejar → agir.
+Essa é a diferença central em relação à busca clássica:
+busca clássica: planejar com mapa completo
+busca online: descobrir o mapa enquanto age.
+7.3 Estratégias Possíveis
+O grupo deverá implementar uma das estratégias abaixo.
+Opção A – Replanning com A*
+O agente mantém um mapa interno. A cada nova percepção, ele atualiza esse mapa e executa
+A* no mapa parcialmente conhecido.
+O agente deve executar apenas o próximo passo e depois replanejar.
+Opção B – Online DFS
+O agente explora sistematicamente o labirinto, mantendo:
+• estados visitados;
+• ações ainda não testadas;
+• caminho de retorno.
+Quando não há vizinhos livres não visitados, o agente retorna.
+7.4 Métricas Obrigatórias
+A busca online deverá ser avaliada por:
+• sucesso ou falha;
+• número total de movimentos;
+• custo real percorrido;
+• número de células reveladas;
+• número de células revisitadas;
+9
+• número de replanejamentos;
+• comparação com o caminho ótimo offline.
+A métrica central é:
+razão online/offline =
+custo percorrido pelo agente online
+custo ótimo no mapa completo .
+Se essa razão for igual a 1, o agente online encontrou caminho tão bom quanto o agente com
+mapa completo.
+Se for maior que 1, o agente pagou um custo por não conhecer o ambiente.
+7.5 Questões de Análise
+O relatório deve responder:
+1. O agente online tomou decisões subótimas? Por quê?
+2. Quais informações faltavam ao agente?
+3. O mapa interno convergiu para o mapa real?
+4. O agente revisitou muitas células?
+5. Como melhorar a exploração?
+6. O que diferencia busca online de busca clássica?
+8 Visualização Obrigatória
+O projeto deverá conter uma visualização do comportamento do agente.
+A visualização pode ser feita com:
+• terminal;
+• Matplotlib;
+• animação simples;
+• interface web;
+• notebook Jupyter;
+• exportação de imagens.
+A visualização deve mostrar:
+1. mapa original;
+10
+2. caminho encontrado;
+3. nós expandidos ou visitados;
+4. trajetória online passo a passo;
+5. rota otimizada da busca local.
+9 Cronograma de 3 Semanas
+Semana 1 – Agente e Busca Clássica
+Entregas parciais:
+• modelagem PEAS;
+• formulação formal;
+• leitura de mapas;
+• BFS, DFS, UCS, Gulosa e A*;
+• primeiros experimentos.
+Checkpoint esperado:
+agente resolve labirintos conhecidos.
+Semana 2 – Busca Local com Coletas
+Entregas parciais:
+• modelagem dos pontos de coleta;
+• Hill-Climbing;
+• Simulated Annealing;
+• gráficos de convergência;
+• análise de mínimos locais.
+Checkpoint esperado:
+agente otimiza a ordem de visitação dos pontos de coleta.
+11
+Semana 3 – Busca Online, Relatório e Defesa
+Entregas finais:
+• agente online;
+• visualização;
+• relatório técnico;
+• arquivo de auditoria do uso de IA;
+• testes em mapas ocultos fornecidos pelo professor.
+Checkpoint esperado:
+agente atua em labirinto desconhecido.
+10 Uso de IA Generativa
+O uso de ferramentas como ChatGPT, Claude, Gemini ou Copilot é permitido, desde que
+declarado.
+O grupo pode usar IA para:
+• discutir ideias;
+• revisar código;
+• gerar testes;
+• explicar erros;
+• sugerir visualizações;
+• comparar algoritmos.
+O grupo não pode entregar uma solução que não compreende.
+10.1 Arquivo Obrigatório: uso_ia.md
+O grupo deverá entregar um arquivo chamado:
+uso_ia.md
+contendo:
+1. ferramentas utilizadas;
+2. principais prompts utilizados;
+12
+3. trechos de código sugeridos por IA;
+4. sugestões rejeitadas;
+5. erros cometidos pela IA;
+6. como o grupo validou a solução;
+7. modificações feitas pelo grupo.
+11 Entregáveis Finais
+O grupo deverá entregar:
+1. código-fonte em Python;
+2. mapas utilizados;
+3. arquivo README.md;
+4. relatório técnico em PDF;
+5. arquivo uso_ia.md;
+6. resultados experimentais em .csv;
+7. gráficos de desempenho;
+8. Apresentação em sala por um dos membros (escolhido pelo professor)
+12 Relatório Técnico
+O relatório deve conter:
+1. introdução;
+2. modelagem PEAS;
+3. formulação formal dos problemas;
+4. descrição dos algoritmos;
+5. metodologia experimental;
+6. resultados;
+7. gráficos;
+8. análise crítica;
+9. limitações;
+10. uso de IA;
+13
+11. conclusão.
+Tamanho sugerido:
+6 a 10 páginas.
+13 Rubrica de Avaliação
+Critério Pontos
+Modelagem do agente e PEAS 10
+Formulação formal dos problemas 10
+Busca clássica implementada e comparada 15
+Busca local implementada e analisada 15
+Busca online implementada e analisada 15
+Visualização e usabilidade 10
+Experimentos, métricas e gráficos 10
+Relatório técnico 10
+Auditoria do uso de IA 5
+Total 100%
+14 Critérios de Penalização
+O grupo poderá perder pontos se:
+• não conseguir explicar o próprio código;
+• não entregar relatório experimental;
+• não declarar uso de IA;
+• não reproduzir resultados;
+• não implementar os algoritmos obrigatórios;
+• usar apenas bibliotecas prontas de busca sem implementação própria;
+• não conseguir executar em mapas novos;
+• apresentar gráficos sem análise.
+14

@@ -8,14 +8,16 @@ class LabirintoBusca(LabirintoBuscaBase):
         ordem_explorados: List[Estado] = []
         nos_explorados = 0
         nos_expandidos = 0
+        tamanho_max_fronteira = 1
         limite = self.h(self.inicio)
         inicio = No(self.inicio, g=0.0)
 
         def dfs_limitado(no: No, limite_atual: float, caminho_atual: Set[Estado]):
-            nonlocal nos_explorados, nos_expandidos, ordem_explorados
+            nonlocal nos_explorados, nos_expandidos, ordem_explorados, tamanho_max_fronteira
 
             nos_explorados += 1
             ordem_explorados.append(no.estado)
+            tamanho_max_fronteira = max(tamanho_max_fronteira, len(caminho_atual))
             f = no.g + self.h(no.estado)
 
             if f > limite_atual:
@@ -53,9 +55,29 @@ class LabirintoBusca(LabirintoBuscaBase):
 
             if temp == 'FOUND':
                 caminho, acoes = self.reconstruir(solucao)
-                return ResultadoBusca('IDA*', True, caminho, acoes, nos_explorados, nos_expandidos, ordem_explorados)
+                return ResultadoBusca(
+                    'IDA*',
+                    True,
+                    caminho,
+                    acoes,
+                    solucao.g,
+                    nos_explorados,
+                    nos_expandidos,
+                    ordem_explorados,
+                    tamanho_max_fronteira,
+                )
 
             if temp == math.inf:
-                return ResultadoBusca('IDA*', False, [], [], nos_explorados, nos_expandidos, ordem_explorados)
+                return ResultadoBusca(
+                    'IDA*',
+                    False,
+                    [],
+                    [],
+                    None,
+                    nos_explorados,
+                    nos_expandidos,
+                    ordem_explorados,
+                    tamanho_max_fronteira,
+                )
 
             limite = temp

@@ -25,6 +25,8 @@ ALGORITMOS_BUSCA = {
     "IDA*": lambda caminho: BuscaIDAStar(caminho).busca_idastar(),
 }
 
+ALGORITMOS_SEMANA1 = ("BFS", "DFS", "UCS", "Greedy", "A*")
+
 
 def gerenciar_solucao(nome_algoritmo: str, caminho_mapa: str):
     algoritmo_funcao = ALGORITMOS_BUSCA.get(nome_algoritmo)
@@ -41,19 +43,26 @@ def gerenciar_solucao(nome_algoritmo: str, caminho_mapa: str):
     labirinto.num_explored = resultado.nos_explorados
     labirinto.explored = set(resultado.estados_explorados)
 
-    custo_caminho = resultado.tamanho_caminho or 0
+    custo_caminho = resultado.custo_caminho
+    passos = resultado.tamanho_caminho
     nos_expandidos = resultado.nos_expandidos
 
     alpha = 1.0
     beta = 0.5
     gamma = 100.0
-    desempenho_J = -(alpha * custo_caminho) - (beta * nos_expandidos) - (gamma * t_total)
+    desempenho_J = None
+    if resultado.encontrado and custo_caminho is not None:
+        desempenho_J = -(alpha * custo_caminho) - (beta * nos_expandidos) - (gamma * t_total)
 
     labirinto.metricas = {
         "algoritmo": resultado.algoritmo,
+        "sucesso": resultado.encontrado,
         "custo": custo_caminho,
+        "passos": passos,
+        "explorados": resultado.nos_explorados,
         "expandidos": nos_expandidos,
         "tempo_segundos": t_total,
+        "fronteira_max": resultado.tamanho_max_fronteira,
         "desempenho_J": desempenho_J,
     }
 

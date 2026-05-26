@@ -23,9 +23,11 @@ class ResultadoBusca:
     encontrado: bool
     caminho: List[Estado]
     acoes: List[str]
+    custo_caminho: Optional[float]
     nos_explorados: int
     nos_expandidos: int
     estados_explorados: List[Estado]
+    tamanho_max_fronteira: int
 
     @property
     def tamanho_caminho(self) -> Optional[int]:
@@ -104,6 +106,7 @@ class LabirintoBuscaBase:
         ordem_explorados: List[Estado] = []
         nos_explorados = 0
         nos_expandidos = 0
+        tamanho_max_fronteira = len(fronteira)
 
         while fronteira:
             _, _, no = heapq.heappop(fronteira)
@@ -116,7 +119,17 @@ class LabirintoBuscaBase:
 
             if no.estado == self.objetivo:
                 caminho, acoes = self.reconstruir(no)
-                return ResultadoBusca(nome, True, caminho, acoes, nos_explorados, nos_expandidos, ordem_explorados)
+                return ResultadoBusca(
+                    nome,
+                    True,
+                    caminho,
+                    acoes,
+                    no.g,
+                    nos_explorados,
+                    nos_expandidos,
+                    ordem_explorados,
+                    tamanho_max_fronteira,
+                )
 
             fechados.add(no.estado)
             nos_expandidos += 1
@@ -129,5 +142,16 @@ class LabirintoBuscaBase:
                     filho = No(estado=estado, pai=no, acao=acao, g=novo_g)
                     melhor_g[estado] = novo_g
                     heapq.heappush(fronteira, (funcao_prioridade(filho), next(contador), filho))
+                    tamanho_max_fronteira = max(tamanho_max_fronteira, len(fronteira))
 
-        return ResultadoBusca(nome, False, [], [], nos_explorados, nos_expandidos, ordem_explorados)
+        return ResultadoBusca(
+            nome,
+            False,
+            [],
+            [],
+            None,
+            nos_explorados,
+            nos_expandidos,
+            ordem_explorados,
+            tamanho_max_fronteira,
+        )
