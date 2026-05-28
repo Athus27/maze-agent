@@ -6,7 +6,7 @@ agentes_do_labirinto = {
     1: {"nome": "Agente Busca em Largura", "posicao_atual": [0,0]},
     2: {"nome": "Agente Busca Profundidade", "posicao_atual": [1,1]},
 }
-@app.get("/")  # Decorador que define uma rota HTTP GET no caminho raiz ("/") do servidor.
+@app.get("/")  
 def read_root():
     return {"Hello": "World"}
     # Retorna Dicionario Python, FastAPI converte automaticamente para JSON

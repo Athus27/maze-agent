@@ -7,6 +7,7 @@ from app.services.solucionador_service import ALGORITMOS_SEMANA1, gerenciar_solu
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 MAPAS_DIR = BASE_DIR / "data" / "labyrinths"
+MAPAS_DIR_CUSTOM = MAPAS_DIR /"custom"
 RESULTADOS_DIR = BASE_DIR / "data" / "resultados"
 CAMPOS = [
     "mapa",
@@ -25,7 +26,7 @@ CAMPOS = [
 def executar_experimentos():
     registros = []
 
-    for mapa in sorted(MAPAS_DIR.glob("*.txt")):
+    for mapa in sorted([*MAPAS_DIR.glob("*.txt"), *MAPAS_DIR_CUSTOM.glob("*.txt")]):
         for algoritmo in ALGORITMOS_SEMANA1:
             labirinto = gerenciar_solucao(algoritmo, str(mapa))
             metricas = labirinto.metricas
